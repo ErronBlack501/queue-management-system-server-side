@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Counter;
+use App\Models\Service;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class ServiceSeeder extends Seeder
 {
@@ -12,6 +14,6 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Service::factory()->has(Counter::factory()->count(3))->count(3)->create();
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Counter;
+use App\Models\Service;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CounterSeeder extends Seeder
 {
@@ -12,6 +14,6 @@ class CounterSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+       
     }
 }

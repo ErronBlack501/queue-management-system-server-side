@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class CounterFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'counter_number' => fake()->numerify(),
+            'counter_status' => fake()->randomElement(['idle', 'serving', 'closed', 'suspended']),
+            'service_id' => Service::factory(),
         ];
     }
 }
