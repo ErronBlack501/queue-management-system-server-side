@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -19,7 +20,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return response()->noContent();
+        $token = $request->user()->createToken('API Token')->plainTextToken;
+
+        $response = new Response();
+
+        return $response->withCookie(new Cookie('token', $token, 60));
+        // return response()->noContent();
     }
 
     /**
