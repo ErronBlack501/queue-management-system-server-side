@@ -16,4 +16,4 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], f
     Route::apiResource('counters', CounterController::class);
     Route::apiResource('tickets', TicketController::class)->only(['index', 'show']);
     Route::apiResource('ticketHistories', TicketHistoryController::class)->only(['index', 'show']);
-})->middleware(['auth:sanctum']);
+})->middleware('auth:sanctum');
