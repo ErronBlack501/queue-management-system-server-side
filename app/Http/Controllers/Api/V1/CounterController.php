@@ -3,20 +3,24 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Counter;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\CounterResource;
 use App\Http\Resources\V1\CounterCollection;
 use App\Http\Requests\V1\StoreCounterRequest;
 use App\Http\Requests\V1\UpdateCounterRequest;
-use App\Http\Resources\V1\CounterResource;
 
 class CounterController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new CounterCollection(Counter::paginate(10));
+        $dataArray = $request->validate([
+            'per_page' => 'integer|min:1'
+        ]);
+        return new CounterCollection(Counter::paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
     }
 
     // /**
