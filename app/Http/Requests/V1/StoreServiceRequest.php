@@ -23,9 +23,9 @@ class StoreServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'serviceName' => ['required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-            'serviceDescription' => ['required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-            'isActive' => 'required|boolean'
+            'service_name' => ['required', 'string', 'alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+            'service_description' => ['required', 'string', 'alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+            'is_active' => 'required|boolean'
         ];
     }
 

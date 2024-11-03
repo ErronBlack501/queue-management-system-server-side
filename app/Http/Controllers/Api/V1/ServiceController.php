@@ -22,7 +22,7 @@ class ServiceController extends Controller
         $dataArray = $request->validate([
             'per_page' => 'integer|min:1'
         ]);
-        return new ServiceCollection(Service::paginate(empty($dataArray) ? 1 : (int)$dataArray['per_page']));
+        return new ServiceCollection(Service::paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
     }
 
     // /**
