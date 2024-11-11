@@ -26,15 +26,15 @@ class UpdateServiceRequest extends FormRequest
 
         if ($method === "PUT") {
             return [
-                'serviceName' => ['required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-                'serviceDescription' => ['required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-                'isActive' => 'required|boolean'
+                'service_name' => ['required', 'string', 'alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+                'service_description' => ['required', 'string', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+                'is_active' => 'required|boolean'
             ];
         } else {
             return [
-                'serviceName' => ['sometimes', 'required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-                'serviceDescription' => ['sometimes', 'required', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-                'isActive' => 'sometimes|required|boolean'
+                'service_name' => ['sometimes', 'required', 'string','alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+                'service_description' => ['sometimes', 'required', 'string',Rule::unique('services')->ignore($this->route()->parameter('service'))],
+                'is_active' => 'sometimes|required|boolean'
             ];
         }
     }
@@ -44,7 +44,7 @@ class UpdateServiceRequest extends FormRequest
         $input = [
             'service_name' => $this->serviceName,
             'service_description' => $this->serviceDescription,
-            'is_active' => $this->isActive
+            'is_active' => is_null($this->isActive) ? null : filter_var($this->isActive, FILTER_VALIDATE_BOOLEAN)
         ];
 
         if ($this->isThereAnyNullValue($input)) {

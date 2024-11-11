@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'role' => 'admin',
         ]);
-        User::factory(1000)->create();
 
         $this->call([
             ServiceSeeder::class,

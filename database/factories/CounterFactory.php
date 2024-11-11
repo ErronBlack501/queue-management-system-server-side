@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,6 +22,7 @@ class CounterFactory extends Factory
             'counter_number' => fake()->numerify(),
             'counter_status' => fake()->randomElement(['idle', 'serving', 'closed', 'suspended']),
             'service_id' => Service::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

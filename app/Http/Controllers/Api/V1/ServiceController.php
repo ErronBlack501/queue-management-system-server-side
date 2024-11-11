@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\ServiceCreatedEvent;
+use App\Events\ServiceDeletedEvent;
+use App\Events\ServiceUpdatedEvent;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,7 +25,7 @@ class ServiceController extends Controller
         $dataArray = $request->validate([
             'per_page' => 'integer|min:1'
         ]);
-        return new ServiceCollection(Service::paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
+        return new ServiceCollection(Service::filter()->latest()->paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
     }
 
     // /**

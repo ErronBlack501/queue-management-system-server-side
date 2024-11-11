@@ -25,15 +25,15 @@ class UpdateCounterRequest extends FormRequest
 
         if ($method === "PUT") {
             return [
-                'counterNumber' => 'required|alpha_num:ascii',
-                'counterStatus' => 'required|in:open,closed,suspended',
-                'serviceId' => 'required|exists:services,id',
+                'counter_number' => 'required|alpha_num:ascii',
+                'counter_status' => 'required|in:open,closed,suspended',
+                'service_id' => 'required|exists:services,id',
             ];
         } else {
             return [
-                'counterNumber' => 'sometimes|required|alpha_num:ascii',
-                'counterStatus' => 'sometimes|required|in:open,closed,suspended',
-                'serviceId' => 'sometimes|required|exists:services,id',
+                'counter_number' => 'sometimes|required|alpha_num:ascii',
+                'counter_status' => 'sometimes|required|in:open,closed,suspended',
+                'service_id' => 'sometimes|required|exists:services,id',
             ];
         }
     }

@@ -25,7 +25,7 @@ class StoreCounterRequest extends FormRequest
         return [
             'counter_number' => ['required', 'alpha_num:ascii', Rule::unique('counters')->ignore($this->route()->parameter('counter'))],
             'counter_status' => 'required|in:open,serving,closed,suspended',
-            'serviceId' => 'required|exists:services,id',
+            'service_id' => 'required|exists:services,id',
         ];
     }
 

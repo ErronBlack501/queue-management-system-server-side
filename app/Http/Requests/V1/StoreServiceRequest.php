@@ -24,8 +24,8 @@ class StoreServiceRequest extends FormRequest
     {
         return [
             'service_name' => ['required', 'string', 'alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-            'service_description' => ['required', 'string', 'alpha', Rule::unique('services')->ignore($this->route()->parameter('service'))],
-            'is_active' => 'required|boolean'
+            'service_description' => ['required', 'string', Rule::unique('services')->ignore($this->route()->parameter('service'))],
+            'is_active' => ['required', 'boolean']
         ];
     }
 
@@ -34,7 +34,7 @@ class StoreServiceRequest extends FormRequest
         $this->merge([
             'service_name' => $this->serviceName,
             'service_description' => $this->serviceDescription,
-            'is_active' => $this->isActive
+            'is_active' =>  is_null($this->isActive) ? null : filter_var($this->isActive, FILTER_VALIDATE_BOOLEAN),
         ]);
     }
 }

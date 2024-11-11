@@ -20,7 +20,11 @@ class CounterController extends Controller
         $dataArray = $request->validate([
             'per_page' => 'integer|min:1'
         ]);
-        return new CounterCollection(Counter::paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
+
+        $counter = Counter::filter();
+        $counter = $counter->with(['service', 'user']);
+
+        return new CounterCollection($counter->latest()->paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
     }
 
     // /**
@@ -44,6 +48,7 @@ class CounterController extends Controller
      */
     public function show(Counter $counter)
     {
+        $counter->load(['service', 'user']);
         return new CounterResource($counter);
     }
 

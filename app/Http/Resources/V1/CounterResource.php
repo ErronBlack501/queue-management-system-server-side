@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CounterResource extends JsonResource
@@ -18,8 +19,8 @@ class CounterResource extends JsonResource
             'id' => (string)$this->id,
             'counterNumber' => $this->counter_number,
             'counterStatus' => $this->counter_status,
-            'serviceId' => $this->service_id,
-            'serviceName' => $this->service->service_name,
+            'service' => new ServiceResource($this->whenLoaded('service')),
+            'user' => new UserResource($this->whenLoaded('user')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

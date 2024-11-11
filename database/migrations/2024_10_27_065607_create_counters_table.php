@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('counter_number')->unique();
             $table->enum('counter_status', ['idle', 'serving', 'closed', 'suspended'])->default('idle'); 
             $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('service_id')->references('id')->on('services')->cascadeOnDelete();
             $table->timestamps();
         });

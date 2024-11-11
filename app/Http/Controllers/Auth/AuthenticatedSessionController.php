@@ -16,15 +16,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): Response
     {
+        $user = $request->user();
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        $token = $request->user()->createToken('API Token')->plainTextToken;
+        $token = $user->createToken('API Token')->plainTextToken;
+        $user->counter->counter_status = 'idle';
+        $user->counter->save();
 
-        $response = new Response();
 
-        return $response->withCookie(new Cookie('token', $token, 60));
+        return response()->cookie('token', $token, 60);
         // return response()->noContent();
     }
 
