@@ -17,6 +17,14 @@ class Ticket extends Model
         'counter_id',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (Ticket $ticket) {
+            $ticket->ticket_number = str_pad($ticket->id, 3, '0', STR_PAD_LEFT);
+            $ticket->save();
+        });
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

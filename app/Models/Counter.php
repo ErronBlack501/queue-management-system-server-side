@@ -16,6 +16,17 @@ class Counter extends Model
         'service_id'
     ];
 
+     /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (Counter $counter) {
+            $counter->counter_number = $counter->counter_number = str_pad($counter->id, 3, '0', STR_PAD_LEFT);
+            $counter->save();
+        });
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

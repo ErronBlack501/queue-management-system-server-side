@@ -16,10 +16,12 @@ class TicketResource extends JsonResource
     {
         return  [
             'id' => (string)$this->id,
-            'serviceName' => $this->service_name,
-            'serviceDescription' => $this->service_description,
-            'estimatedDuration' => $this->estimated_duration,
-            'isActive' => $this->is_active,
+            'ticketNumber' => $this->ticket_number,
+            'ticketStatus' => $this->ticket_status,
+            'service' => new ServiceResource($this->whenLoaded('service')),
+            'counter' => new CounterResource($this->whenLoaded(relationship: 'counter')),
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
         ];
     }
 }
