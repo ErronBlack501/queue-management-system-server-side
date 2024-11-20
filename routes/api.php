@@ -22,10 +22,10 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {
-    Route::apiResource('queue', QueueController::class)->only(['index'])->middleware('auth:sanctum');
-    Route::apiResource('users', UserController::class)->only(['index', 'show'])->middleware('auth:sanctum');
-    Route::apiResource('services', ServiceController::class)->middleware('auth:sanctum');
-    Route::apiResource('counters', CounterController::class)->middleware('auth:sanctum');
-    Route::apiResource('tickets', TicketController::class)->only(['index', 'show', 'store'])->middleware('auth:sanctum');
-    Route::apiResource('ticketHistories', TicketHistoryController::class)->only(['index', 'show'])->middleware('auth:sanctum');
-});
+    Route::apiResource('queue', QueueController::class)->only(['index']);
+    Route::apiResource('users', UserController::class)->only(['index', 'show']);
+    Route::apiResource('services', ServiceController::class);
+    Route::apiResource('counters', CounterController::class);
+    Route::apiResource('tickets', TicketController::class)->only(['index', 'show', 'store']);
+    Route::apiResource('ticketHistories', TicketHistoryController::class)->only(['index', 'show']);
+})->middleware('auth:sanctum');

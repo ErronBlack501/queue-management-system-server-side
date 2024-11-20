@@ -8,7 +8,20 @@ use Illuminate\Support\Facades\Redis;
 
 class QueueController extends Controller
 {
-    public function index(){
-        
+    public function index()
+    {
+        $ticketKeys = Redis::lrange('waitingList', 0, 5);
+        $tickets = [];
+
+        foreach ($ticketKeys as $ticketKey) {
+            $tickets[] = Redis::hgetall($ticketKey);
+        }
+
+        $nowServingTicket = count($tickets) > 0 ? array_shift($tickets) : null;
+
+        return response()->json([
+            'nowServingTicket' => $nowServingTicket,
+            'tickets' => $tickets,
+        ]);
     }
 }
