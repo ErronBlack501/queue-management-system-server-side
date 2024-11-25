@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Resources\V1\TicketResource;
 use App\Http\Resources\V1\TicketCollection;
+use App\Http\Requests\V1\UpdateTicketRequest;
 
 
 
@@ -32,7 +33,7 @@ class TicketController extends Controller
             $nowServingTicket = Redis::hgetall($ticketKey);
         }
 
-        $tickets = $ticket->with(['counter', 'service'])->paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']);
+        $tickets = $ticket->with(['counter', 'service'])->orderBy('id')->paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']);
 
         return response()->json([
             'nowServing' => $nowServingTicket,
@@ -51,12 +52,12 @@ class TicketController extends Controller
 
         // Get the available counters for the selected service
         $idleCounters = Counter::where('service_id', $validate['service_id'])
-            ->where('counter_status', 'idle')
+            ->where('counter_status', 'open')
             ->get();
 
         // If no idle counters are available, return an error response
         if ($idleCounters->isEmpty()) {
-            return response()->json(['message' => 'No idle counters available for the selected service.'], 404);
+            return response()->json(['message' => 'No open counters available for the selected service.'], 404);
         }
 
         // Check the last assigned counter ID in Redis for this service
@@ -91,7 +92,7 @@ class TicketController extends Controller
         // Update the last assigned counter ID for this service in Redis
         Redis::set('last_assigned_counter_id:' . $validate['service_id'], $nextCounter->id);
 
-        // Broadcast the TicketCreatedEvent to notify clients
+        // Broadcast the TicketCreatedEvent to notify counters
         broadcast(new TicketCreatedEvent($validate['service_id'], $nextCounter->id));
 
         // Return the newly created ticket as a resource
@@ -108,13 +109,13 @@ class TicketController extends Controller
     }
 
 
-    // /**
-    //  * Update the specified resource in storage.
-    //  */
-    // public function update(UpdateTicketRequest $request, Ticket $ticket)
-    // {
-    //     //
-    // }
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    {
+        $ticket->update($request->validated());
+    }
 
     // /**
     //  * Remove the specified resource from storage.

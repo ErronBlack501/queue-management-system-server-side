@@ -27,20 +27,12 @@ class CounterController extends Controller
         return new CounterCollection($counter->latest()->paginate(empty($dataArray) ? 10 : (int)$dataArray['per_page']));
     }
 
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     //
-    // }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreCounterRequest $request)
     {
-        return new CounterResource(Counter::create($request->all()));
+        return new CounterResource(Counter::create($request->validated()));
     }
 
     /**
@@ -65,7 +57,7 @@ class CounterController extends Controller
      */
     public function update(UpdateCounterRequest $request, Counter $counter)
     {
-        $counter->update($request->all());
+        $counter->update($request->validated());
     }
 
     /**

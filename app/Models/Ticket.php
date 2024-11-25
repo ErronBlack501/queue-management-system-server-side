@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Abbasudo\Purity\Traits\Filterable;
+use App\Events\TicketHandledEvent;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Ticket extends Model
 {
@@ -13,6 +16,10 @@ class Ticket extends Model
     protected $fillable = [
         'ticket_number',
         'ticket_status',
+        'processed_at',
+        'completed_at',
+        'canceled_at',
+        'processing_duration',
         'service_id',
         'counter_id',
     ];
@@ -22,6 +29,23 @@ class Ticket extends Model
         static::created(function (Ticket $ticket) {
             $ticket->ticket_number = str_pad($ticket->id, 3, '0', STR_PAD_LEFT);
             $ticket->save();
+        });
+
+        static::updated(function (Ticket $ticket) {
+            if ($ticket->processing_duration) {
+                if ($ticket->processed_at) {
+                    $processedAt = Carbon::parse($ticket->processed_at);
+
+                    // Calculer la durée de traitement en fonction de l'état du ticket
+                    if ($ticket->completed_at) {
+                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->completed_at))->format('%H:%I:%S');
+                    } elseif ($ticket->canceled_at) {
+                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->canceled_at))->format('%H:%I:%S');
+                    }
+
+                    $ticket->save();
+                }
+            }
         });
     }
 
@@ -33,10 +57,5 @@ class Ticket extends Model
     public function counter()
     {
         return $this->belongsTo(Counter::class);
-    }
-
-    public function ticketHistories()
-    {
-        return $this->hasMany(TicketHistory::class);
     }
 }

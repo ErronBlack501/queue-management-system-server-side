@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('counters', function (Blueprint $table) {
             $table->id();
             $table->string('counter_number')->nullable();
-            $table->enum('counter_status', ['idle', 'serving', 'closed', 'suspended'])->default('idle');
+            $table->enum('counter_status', ['open', 'closed'])->default('open');
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

@@ -27,7 +27,7 @@ class AuthenticatedSessionController extends Controller
 
         if ($user->role == 'employee') {
             $counter = Counter::where('user_id', '=', $user->id)->first();
-            $counter->counter_status = 'idle';
+            $counter->counter_status = 'open';
             $counter->save();
         }
 

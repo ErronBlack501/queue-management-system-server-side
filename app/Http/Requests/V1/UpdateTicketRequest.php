@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\V1;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCounterRequest extends FormRequest
+class UpdateTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,24 +26,28 @@ class UpdateCounterRequest extends FormRequest
 
         if ($method === "PUT") {
             return [
-                'counter_number' => 'required|alpha_num:ascii',
-                'counter_status' => 'required|in:idle,closed',
-                'service_id' => 'required|exists:services,id',
+                'ticket_status' => 'required|in:waiting,completed,canceled',
+                'processed_at' => 'required',
+                'completed_at' => 'required',
+                'canceled_at' => 'required',
             ];
         } else {
             return [
-                'counter_number' => 'sometimes|required|alpha_num:ascii',
-                'counter_status' => 'sometimes|required|in:open,closed',
-                'service_id' => 'sometimes|required|exists:services,id',
+                'ticket_status' => 'sometimes|required|in:waiting,completed,canceled',
+                'processed_at' => 'sometimes|required',
+                'completed_at' => 'sometimes|required',
+                'canceled_at' => 'sometimes|required',
             ];
         }
     }
+
     protected function prepareForValidation()
     {
         $input = [
-            'counter_number' => $this->counterNumber,
-            'counter_status' => $this->counterStatus,
-            'service_id' => !is_null($this->serviceId) ? (int)$this->serviceId : null,
+            'ticket_status' => $this->ticketStatus,
+            'processed_at' => $this->processedAt,
+            'completed_at' => $this->completedAt,
+            'canceled_at' => $this->canceledAt, 
         ];
 
         if ($this->isThereAnyNullValue($input)) {
