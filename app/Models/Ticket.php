@@ -27,7 +27,23 @@ class Ticket extends Model
     protected static function booted(): void
     {
         static::created(function (Ticket $ticket) {
-            $ticket->ticket_number = str_pad($ticket->id, 3, '0', STR_PAD_LEFT);
+            $latestTicket = Ticket::latest()->first();
+            $ticketNumber = 1;
+
+            if ($latestTicket) {
+                $latestTicketDate = $latestTicket->created_at->toDateString();
+                $currentTicketDate = $ticket->created_at->toDateString();
+
+                if ($latestTicketDate === $currentTicketDate) {
+                    $ticketNumber = Redis::incr('ticket_counter');
+                } else {
+                    Redis::set('ticket_counter', 1);
+                }
+            } else {
+                Redis::set('ticket_counter', 1);
+            }
+
+            $ticket->ticket_number = str_pad($ticketNumber, 3, '0', STR_PAD_LEFT);
             $ticket->save();
         });
 
@@ -36,7 +52,6 @@ class Ticket extends Model
                 if ($ticket->processed_at) {
                     $processedAt = Carbon::parse($ticket->processed_at);
 
-                    // Calculer la durée de traitement en fonction de l'état du ticket
                     if ($ticket->completed_at) {
                         $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->completed_at))->format('%H:%I:%S');
                     } elseif ($ticket->canceled_at) {

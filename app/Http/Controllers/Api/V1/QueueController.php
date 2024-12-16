@@ -35,7 +35,7 @@ class QueueController extends Controller
 
         if (!$hashKey) {
             return response()->json([
-                'message' => 'La liste est vide ou n\'existe pas.'
+                'message' => "The list is empty or doesn't exist."
             ], 404);
         }
 
@@ -44,7 +44,7 @@ class QueueController extends Controller
         broadcast(new TicketHandledEvent());
 
         return response()->json([
-            'message' => "L'élément '$hashKey' a été retiré de la liste et supprimé de Redis."
+            'message' => "The element '$hashKey' has been removed from the list and deleted from Redis."
         ], 200);
     }
 }
