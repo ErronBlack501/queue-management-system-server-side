@@ -2,23 +2,22 @@
 
 namespace App\Events;
 
-use App\Models\Counter;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
-class TicketCreatedEvent implements ShouldBroadcast
+class TicketProcessingStartedEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public $service_id, public $counter_id)
+    public function __construct(public string $message)
     {
         //
     }
@@ -32,7 +31,6 @@ class TicketCreatedEvent implements ShouldBroadcast
     {
         return [
             new PrivateChannel('notifications'),
-            new Channel('client-channel'),
         ];
     }
 }

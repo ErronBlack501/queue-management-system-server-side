@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Abbasudo\Purity\Traits\Filterable;
-use App\Events\TicketHandledEvent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,12 +34,12 @@ class Ticket extends Model
                 $currentTicketDate = $ticket->created_at->toDateString();
 
                 if ($latestTicketDate === $currentTicketDate) {
-                    $ticketNumber = Redis::incr('ticket_counter');
+                    $ticketNumber = Redis::incr('ticket_number');
                 } else {
-                    Redis::set('ticket_counter', 1);
+                    Redis::set('ticket_number', 1);
                 }
             } else {
-                Redis::set('ticket_counter', 1);
+                Redis::set('ticket_number', 1);
             }
 
             $ticket->ticket_number = str_pad($ticketNumber, 3, '0', STR_PAD_LEFT);
@@ -53,9 +52,9 @@ class Ticket extends Model
                     $processedAt = Carbon::parse($ticket->processed_at);
 
                     if ($ticket->completed_at) {
-                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->completed_at))->format('%H:%I:%S');
+                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->completed_at));
                     } elseif ($ticket->canceled_at) {
-                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->canceled_at))->format('%H:%I:%S');
+                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->canceled_at));
                     }
 
                     $ticket->save();

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->timestamp('processed_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
-            $table->time('processing_duration')->nullable();
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('counter_id');
             $table->foreign('service_id')->references('id')->on('services')->cascadeOnDelete();

@@ -28,10 +28,7 @@ class QueueController extends Controller
 
     public function lpop()
     {
-
-        $listKey = 'waitingList';
-
-        $hashKey = Redis::lpop($listKey);
+        $hashKey = Redis::lpop('waitingList');
 
         if (!$hashKey) {
             return response()->json([
