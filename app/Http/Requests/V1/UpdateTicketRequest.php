@@ -30,7 +30,6 @@ class UpdateTicketRequest extends FormRequest
                 'processed_at' => 'required',
                 'completed_at' => 'required',
                 'canceled_at' => 'required',
-                'processing_duration' => 'required'
             ];
         } else {
             return [
@@ -38,7 +37,6 @@ class UpdateTicketRequest extends FormRequest
                 'processed_at' => 'sometimes|required',
                 'completed_at' => 'sometimes|required',
                 'canceled_at' => 'sometimes|required',
-                'processing_duration' => 'sometimes|required'
             ];
         }
     }
@@ -50,7 +48,6 @@ class UpdateTicketRequest extends FormRequest
             'processed_at' => $this->processedAt,
             'completed_at' => $this->completedAt,
             'canceled_at' => $this->canceledAt,
-            'processing_duration' => (float) $this->processingDuration
         ];
 
         if ($this->isThereAnyNullValue($input)) {

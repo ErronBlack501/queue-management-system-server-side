@@ -53,7 +53,8 @@ class TicketController extends Controller
     public function callingClient()
     {
         $nowServingTicket = $this->getFirst('waitingList');
-        broadcast(new CallingClientEvent('Le ticket numéro ' . $nowServingTicket->ticket_number . ' est attendu au guichet numéro ' . $nowServingTicket->counter->counter_number . '.'))->toOthers();
+        if ($nowServingTicket)
+            broadcast(new CallingClientEvent('Votre attention s\'il vous plaît, le ticket numéro ' . $nowServingTicket['ticket_number'] . ' est attendu au guichet numéro ' . $nowServingTicket['counter_number'] . '.'))->toOthers();
     }
 
 
@@ -64,35 +65,35 @@ class TicketController extends Controller
     {
         // Validate the request
         $validate = $request->validate(['service_id' => 'required|numeric|exists:services,id']);
-    
+
         // Get the available counters for the selected service
         $idleCounters = Counter::where('service_id', $validate['service_id'])
             ->where('counter_status', 'open')
             ->get();
-    
+
         // If no idle counters are available, return an error response
         if ($idleCounters->isEmpty()) {
             return response()->json(['message' => 'No open counters available for the selected service.'], 404);
         }
-    
+
         // Check the last assigned counter ID in Redis for this service
         $lastAssignedCounterId = (int) Redis::get('last_assigned_counter_id:' . $validate['service_id']);
-    
+
         // Select the next counter: default to the first one if no last assigned ID exists
         $nextCounter = $idleCounters->first();
         if ($lastAssignedCounterId) {
             $nextCounter = $idleCounters->where('id', '>', $lastAssignedCounterId)->first() ?? $idleCounters->first();
         }
-    
+
         // Create the new ticket and associate it with the selected counter
         $newTicket = Ticket::create([
             'service_id' => $validate['service_id'],
             'counter_id' => $nextCounter->id,
         ]);
-    
+
         // Generate the Redis key for this ticket
         $ticketKey = "ticket:{$newTicket->ticket_number}";
-    
+
         // Store the ticket details in Redis
         Redis::hset($ticketKey, [
             'id' => $newTicket->id,
@@ -100,26 +101,28 @@ class TicketController extends Controller
             'ticket_number' => $newTicket->ticket_number,
             'counter_number' => $nextCounter->counter_number,
         ]);
-    
+
         // Add the ticket to the waiting list in Redis (create the list if it doesn't exist)
         Redis::rpush('waitingList', $ticketKey);
-    
+
         // Update the last assigned counter ID for this service in Redis
         Redis::set('last_assigned_counter_id:' . $validate['service_id'], $nextCounter->id);
-    
+
         // Get the position of the ticket in the waiting list
         $position = Redis::lpos('waitingList', $ticketKey);
-    
+
         // Broadcast the TicketCreatedEvent to notify counters
         broadcast(new TicketCreatedEvent($validate['service_id'], $nextCounter->id));
-    
+
+        $newTicket->load(['service', 'counter']);
+
         // Return the newly created ticket and the count of tickets before it
         return response()->json([
             'newTicket' => new TicketResource($newTicket),
             'ticketsBefore' => $position, // Number of tickets before the current ticket
         ]);
     }
-    
+
 
     /**
      * Display the specified resource.

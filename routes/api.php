@@ -23,7 +23,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], function () {
     Route::get('/queue', [QueueController::class, 'index']);
-    Route::get('/tickets', [TicketController::class, 'callingClient']);
+    Route::get('/tickets/ticket-call', [TicketController::class, 'callingClient']);
     Route::delete('/queue/pop-first', [QueueController::class, 'lpop']);
     Route::apiResource('users', UserController::class)->only(['index', 'show']);
     Route::apiResource('services', ServiceController::class);

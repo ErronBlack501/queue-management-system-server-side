@@ -45,22 +45,6 @@ class Ticket extends Model
             $ticket->ticket_number = str_pad($ticketNumber, 3, '0', STR_PAD_LEFT);
             $ticket->save();
         });
-
-        static::updated(function (Ticket $ticket) {
-            if ($ticket->processing_duration) {
-                if ($ticket->processed_at) {
-                    $processedAt = Carbon::parse($ticket->processed_at);
-
-                    if ($ticket->completed_at) {
-                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->completed_at));
-                    } elseif ($ticket->canceled_at) {
-                        $ticket->processing_duration = $processedAt->diff(Carbon::parse($ticket->canceled_at));
-                    }
-
-                    $ticket->save();
-                }
-            }
-        });
     }
 
     public function service()
