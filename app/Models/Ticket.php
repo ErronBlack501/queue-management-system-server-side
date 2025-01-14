@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Abbasudo\Purity\Traits\Filterable;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
@@ -18,7 +17,6 @@ class Ticket extends Model
         'processed_at',
         'completed_at',
         'canceled_at',
-        'processing_duration',
         'service_id',
         'counter_id',
     ];
