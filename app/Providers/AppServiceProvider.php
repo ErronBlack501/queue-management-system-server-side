@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Workbench\App\Providers\TelescopeServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -31,6 +31,7 @@ class TicketHandledEvent implements ShouldBroadcast
     {
         return [
             new PrivateChannel('notifications'),
+            new Channel(name: 'client-channel'),
         ];
     }
 }
